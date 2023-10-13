@@ -101,6 +101,7 @@ mkdir -p ${out_dir}${classifier}/${dataset}/
 
 # This creates the scrip to run the job based on the info above
 echo "#!/bin/bash
+#SBATCH --nodes=1
 #SBATCH --mail-type=${mail}
 #SBATCH --mail-user=${mailto}
 #SBATCH -p ${queue}
@@ -113,7 +114,8 @@ echo "#!/bin/bash
 
 . /etc/profile
 
-module add python/anaconda/2019.10/3.7
+module add python/3.10.4
+
 source activate $env_name
 
 # Input args to the default classification_experiments are in main method of

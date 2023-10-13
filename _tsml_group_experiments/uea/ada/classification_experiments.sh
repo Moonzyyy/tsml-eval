@@ -100,7 +100,7 @@ mkdir -p ${out_dir}${classifier}/${dataset}/
 
 # This creates the scrip to run the job based on the info above
 echo "#!/bin/bash
-#SBATCH --nodes= 1
+#SBATCH --nodes=1
 #SBATCH --mail-type=${mail}
 #SBATCH --mail-user=${mailto}
 #SBATCH -p ${queue}
