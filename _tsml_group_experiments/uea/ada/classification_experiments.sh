@@ -100,6 +100,7 @@ mkdir -p ${out_dir}${classifier}/${dataset}/
 
 # This creates the scrip to run the job based on the info above
 echo "#!/bin/bash
+#SBATCH --nodes= 1
 #SBATCH --mail-type=${mail}
 #SBATCH --mail-user=${mailto}
 #SBATCH -p ${queue}
@@ -109,7 +110,6 @@ echo "#!/bin/bash
 #SBATCH --mem=${max_memory}M
 #SBATCH -o ${out_dir}${classifier}/${dataset}/%A-%a.out
 #SBATCH -e ${out_dir}${classifier}/${dataset}/%A-%a.err
-#SBATCH --nodes= 1
 
 . /etc/profile
 
