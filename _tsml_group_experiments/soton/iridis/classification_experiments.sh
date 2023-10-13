@@ -36,7 +36,7 @@ datasets="/mainfs/home/ajb2u23/DataSetLists/TSC_112_2019.txt"
 datasets="/mainfs/home/ajb2u23/DataSetLists/temp.txt"
 
 # Put your home directory here
-local_path="/gpfs/home/$username/"
+local_path="/mainfs/home/$username/"
 
 # Results and output file write location. Change these to reflect your own file structure
 results_dir=$local_path"ClassificationResults/results/"
