@@ -6,7 +6,7 @@ max_folds=10
 start_fold=1
 
 # To avoid dumping 1000s of jobs in the queue we have a higher level queue
-max_num_submitted=100
+max_num_submitted=10
 
 # Queue options are https://my.uea.ac.uk/divisions/it-and-computing-services/service-catalogue/research-it-services/hpc/ada-cluster/using-ada
 queue="batch"
@@ -26,9 +26,9 @@ max_time="168:00:00"
 start_point=1
 
 # Datasets to use and directory of data files. Default is Tony's work space, all should be able to read these. Change if you want to use different data or lists
-data_dir="/mainfs/home/ajb/Data/"
-#datasets="/mainfs/home/ajb/DataSetLists/TSC_112_2019.txt"
-datasets="/mainfs/home/ajb/DataSetLists/temp.txt"
+data_dir="/mainfs/home/ajb2u23/Data/"
+#datasets="/mainfs/home/ajb2u23/DataSetLists/TSC_112_2019.txt"
+datasets="/mainfs/home/ajb2u23/DataSetLists/temp.txt"
 
 # Put your home directory here
 local_path="/mainfs/home/$username/"
@@ -140,6 +140,7 @@ echo "#!/bin/bash
 #SBATCH --mem=${max_memory}M
 #SBATCH -o ${out_dir}${clusterer}/${dataset}/%A-%a.out
 #SBATCH -e ${out_dir}${clusterer}/${dataset}/%A-%a.err
+#SBATCH --nodes=1
 
 . /etc/profile
 

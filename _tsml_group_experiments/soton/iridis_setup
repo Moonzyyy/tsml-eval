@@ -6,7 +6,7 @@ iridis5_d.soton.ac.uk
 dont use a because apparently everyone does. Need to be on the VPN, then just connect
 via putty and log on. Tony: ajb2u23, matthew: mbm1g23
 
-git works.
+git clone https://github.com/time-series-machine-learning/tsml-eval
 
 https://sotonac.sharepoint.com/teams/HPCCommunityWiki/SitePages/Getting-Started-with-HPC.aspx
 
@@ -16,3 +16,6 @@ https://sotonac.sharepoint.com/teams/HPCCommunityWiki/SitePages/Slurm.aspx
 
 Queue names:
 https://sotonac.sharepoint.com/teams/HPCCommunityWiki/SitePages/Iridis%205%20Job-submission-and-Limits-Quotas.aspx
+Need to set number of nodes
+
+sbatch: error: You didn't request a number of nodes, this is a mandatory flag please include #SBATCH --nodes= in your script
