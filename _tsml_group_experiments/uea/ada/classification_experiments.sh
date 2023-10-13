@@ -109,6 +109,7 @@ echo "#!/bin/bash
 #SBATCH --mem=${max_memory}M
 #SBATCH -o ${out_dir}${classifier}/${dataset}/%A-%a.out
 #SBATCH -e ${out_dir}${classifier}/${dataset}/%A-%a.err
+#SBATCH --nodes=1
 
 . /etc/profile
 
