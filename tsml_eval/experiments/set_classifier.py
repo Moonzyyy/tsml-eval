@@ -57,6 +57,8 @@ feature_based_classifiers = [
     "tsfresh-nofs",
     ["tsfreshclassifier", "tsfresh"],
     ["signatureclassifier", "signatures"],
+    ["quant","quantclassifier"],
+    ["grail"]
 ]
 hybrid_classifiers = [
     ["hivecotev1", "hc1"],
@@ -480,6 +482,12 @@ def _set_classifier_feature_based(
         from aeon.classification.feature_based import SignatureClassifier
 
         return SignatureClassifier(random_state=random_state, **kwargs)
+    elif c == "quant":
+        from tsml_eval.estimators.classification.feature_based.quant import QuantClassifier
+        return QuantClassifier(random_state=random_state, **kwargs)
+    elif c == "grail":
+        from tsml_eval.estimators.classification.feature_based.grail import GRAIL
+        return GRAIL(**kwargs)
 
 
 def _set_classifier_hybrid(
