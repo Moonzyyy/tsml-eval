@@ -94,18 +94,18 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
     def _transform(self, X, y=None):
         """Transform X and return a transformed version.
 
-        private _transform containing the core logic, called from transform
+        private _transform containing the core logic, called from transform.
 
         Parameters
         ----------
         X : np.ndarray
-            1D time series to be transformed
-        y : ignored argument for interface compatibility
+            1D time series to be transformed.
+        y : ignored argument for interface compatibility.
 
         Returns
         -------
         np.ndarray
-            1D transform of X
+            1D transform of X.
         """
         results = None
         if(self.transformer == 1):
@@ -129,7 +129,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         return np.concatenate(results)
     
     def _sliding_window(self, X):
-        """Transform a time series using the sliding window algorithm. (Online)
+        """Transform a time series using the sliding window algorithm (Online).
 
         Parameters
         ----------
@@ -139,7 +139,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         Returns
         -------
         list
-            List of transformed segmented time series
+            List of transformed segmented time series.
         """
         seg_ts = []
         anchor = 0
@@ -152,7 +152,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         return seg_ts
     
     def _top_down(self, X):
-        """Transform a time series using the top down algorithm (Offline)
+        """Transform a time series using the top down algorithm (Offline).
 
         Parameters
         ----------
@@ -162,7 +162,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         Returns
         -------
         list
-            List of transformed segmented time series
+            List of transformed segmented time series.
         """
         
         best_so_far = float("inf")
@@ -196,8 +196,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         return left_segment + right_segment
     
     def improvement_splitting_here(self, X, breakpoint):
-        """Returns the SSE of the left and right segmennts split 
-        at a particual point in a time series
+        """Return the SSE of two segments split at a particual point in a time series.
 
         Parameters
         ----------
@@ -216,7 +215,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         return self._calculate_error(left_segment) + self._calculate_error(right_segment)
     
     def _bottom_up(self, X):
-        """Transform a time series using the bottom up algorithm (Offline)
+        """Transform a time series using the bottom up algorithm (Offline).
 
         Parameters
         ----------
@@ -226,7 +225,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         Returns
         -------
         list
-            List of transformed segmented time series
+            List of transformed segmented time series.
         """
         seg_ts = []
         merge_cost = []
@@ -255,7 +254,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         return seg_ts
     
     def _SWAB(self, X):
-        """Transform a time series using the SWAB algorithm (Online)
+        """Transform a time series using the SWAB algorithm (Online).
 
         Parameters
         ----------
@@ -265,7 +264,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         Returns
         -------
         list
-            List of transformed segmented time series
+            List of transformed segmented time series.
         """
         seg_ts = []
         if(self.buffer_size == None):
@@ -295,7 +294,8 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
     
     
     def _best_line(self, X, current_data_point, lower_boundary_window, upper_boundary_window):
-        """Uses sliding window to find the next best segmentation candidate.
+        """Use sliding window to find the next best segmentation candidate.
+
         Used inside of the SWAB algorithm.
 
         Parameters
@@ -308,7 +308,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
             the lower boundary of the window
         upper_boundary_window: int
             the uppoer boundary of the window
-        
+
         Returns
         -------
         np.array
@@ -327,8 +327,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
     
     #Create own linear regression, inefficient to use sklearns
     def _linear_regression(self, time_series):
-        """Creates a new time series using linear regression based 
-        on the given time series.
+        """Create a new time series using linear regression.
 
         Parameters
         ----------
@@ -350,8 +349,8 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         return regression_line
     
     def _sum_squared_error(self, X, p_X):
-        """Returns the SSE of a value and its predicted value
-        
+        """Return the SSE of a value and its predicted value.
+
         formula: SSE = ∑i (Xi - p_Xi)^2
 
         Parameters
@@ -359,19 +358,19 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         X : np.array
             1D time series.
         p_X: np.array
-            1D linear time series formatted using linear regression
+            1D linear time series formatted using linear regression.
 
         Returns
         -------
         error: float
-            the SSE
+            the SSE.
         """
         
         error = np.sum((X - p_X) ** 2)
         return error
     
     def _calculate_error(self, X):
-        """Returns the SEE of a time series and its linear regression
+        """Return the SEE of a time series and its linear regression.
 
         Parameters
         ----------
@@ -381,7 +380,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
         Returns
         -------
         error: float
-            the SSE
+            the SSE.
         """
         
         lrts = self._linear_regression(X)
@@ -417,7 +416,7 @@ class PiecewiseLinearApproximation(BaseSeriesTransformer):
             Parameters to create testing instances of the class
             Each dict are parameters to construct an "interesting" test instance, i.e.,
             `MyClass(**params)` or `MyClass(**params[i])` creates a valid test instance.
-            `create_test_instance` uses the first (or only) dictionary in `params`
+            `create_test_instance` uses the first (or only) dictionary in `params`.
         """
         params = {
             "transformer": PiecewiseLinearApproximation.Transformer.SWAB,
