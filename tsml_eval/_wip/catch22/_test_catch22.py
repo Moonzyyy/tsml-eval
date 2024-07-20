@@ -1,4 +1,5 @@
-from _catch22 import Catch22
+#from _catch22 import Catch22
+from aeon.transformations.collection.feature_based import Catch22
 import pycatch22
 import numpy as np
 from aeon.datasets import tsc_datasets, load_italy_power_demand
@@ -8,56 +9,32 @@ from decimal import Decimal, ROUND_HALF_UP
 import csv
 import os
 
-features_test =  [
-        "mode_5",
-        "mode_10",
-        "stretch_high",
-        "outlier_timing_pos",
-        "outlier_timing_neg",
-        "acf_timescale",
-        "acf_first_min",
-        "centroid_freq",
-        "low_freq_power",
-        "forecast_error",
-        "trev",
-        "ami2",
-        "ami_timescale",
-        "high_fluctuation",
-        "stretch_decreasing",
-        "entropy_pairs",
-        "whiten_timescale",
-        "periodicity",
-        "dfa",
-        "rs_range",
-        "transition_matrix",
-        "periodicity",
+#Fix these and make them similar to pycatch22, just check the original one
+
+features_short = [
+        'mode_5',
+        'mode_10',
+        'acf_timescale',
+        'acf_first_min',
+        'ami2',
+        'trev',
+        'high_fluctuation',
+        'stretch_high',
+        'transition_matrix',
+        'periodicity',
+        'embedding_dist',
+        'ami_timescale',
+        'whiten_timescale',
+        'outlier_timing_pos',
+        'outlier_timing_neg',
+        'centroid_freq',
+        'stretch_decreasing',
+        'entropy_pairs',
+        'rs_range',
+        'dfa',
+        'low_freq_power',
+        'forecast_error'
     ]
-
-feature_names_aeon = [
-    "DN_HistogramMode_5",
-    "DN_HistogramMode_10",
-    "SB_BinaryStats_diff_longstretch0",
-    "DN_OutlierInclude_p_001_mdrmd",
-    "DN_OutlierInclude_n_001_mdrmd",
-    "CO_f1ecac",
-    "CO_FirstMin_ac",
-    "SP_Summaries_welch_rect_area_5_1",
-    "SP_Summaries_welch_rect_centroid",
-    "FC_LocalSimple_mean3_stderr",
-    "CO_trev_1_num",
-    "CO_HistogramAMI_even_2_5",
-    "IN_AutoMutualInfoStats_40_gaussian_fmmi",
-    "MD_hrv_classic_pnn40",
-    "SB_BinaryStats_mean_longstretch1",
-    "SB_MotifThree_quantile_hh",
-    "FC_LocalSimple_mean1_tauresrat",
-    "CO_Embed2_Dist_tau_d_expfit_meandiff",
-    "SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1",
-    "SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1",
-    "SB_TransitionMatrix_3ac_sumdiagcov",
-    "PD_PeriodicityWang_th0_01",
-]
-
 features_names_pycatch22 = [
         'DN_HistogramMode_5',
         'DN_HistogramMode_10',
@@ -99,10 +76,10 @@ if os.environ['NUMBA_DISABLE_JIT'] == '0':
 else:
     aeon_file_name = "aeon_catch22_no_numba"
 #aeon
-aeon_c22 = Catch22(features=features_test,replace_nans=True)
+aeon_c22 = Catch22(features=features_names_pycatch22 ,replace_nans=True)
 _ = aeon_c22.fit_transform(IPD_X_train)
 
-results_aeon = [features_test]
+results_aeon = [features_names_pycatch22]
 for i in range(len(_)):
     #formatting it to pycatch22 format
     results_aeon.append(_[i])
