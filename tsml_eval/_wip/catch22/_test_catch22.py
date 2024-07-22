@@ -1,5 +1,5 @@
 #from _catch22 import Catch22
-from aeon.transformations.collection.feature_based import Catch22
+from _catch22 import Catch22
 import pycatch22
 import numpy as np
 from aeon.datasets import tsc_datasets, load_italy_power_demand
@@ -35,6 +35,7 @@ features_short = [
         'low_freq_power',
         'forecast_error'
     ]
+
 features_names_pycatch22 = [
         'DN_HistogramMode_5',
         'DN_HistogramMode_10',
@@ -58,25 +59,23 @@ features_names_pycatch22 = [
         'SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1',
         'SP_Summaries_welch_rect_centroid',
         'FC_LocalSimple_mean3_stderr'
-    ]
+]
 
 # $env:NUMBA_DISABLE_JIT = "0"
 # echo $env:NUMBA_DISABLE_JIT
 # Numba Disabled Switcher 0 = off, 1 = on
 
-IPD_X_train, IPD_y_train = load_italy_power_demand(split="train")
-#IPD_X_train = [IPD_X_train[332]]
+IPD_X_train, IPD_y_train = load_italy_power_demand(split="test")
+IPD_X_train = [np.array([[0, 0 , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])]
+#IPD_X_train = [IPD_X_train[3]]
+print(IPD_X_train)
 #print("Training Data: ", IPD_X_train)
 os.environ['NUMBA_DISABLE_JIT'] = '0'
 print("Numba Off: ",os.environ['NUMBA_DISABLE_JIT'])
 
-aeon_file_name = ""
-if os.environ['NUMBA_DISABLE_JIT'] == '0':
-    aeon_file_name = "aeon_catch22_with_numba"
-else:
-    aeon_file_name = "aeon_catch22_no_numba"
+
 #aeon
-aeon_c22 = Catch22(features=features_names_pycatch22 ,replace_nans=True)
+aeon_c22 = Catch22(features=features_names_pycatch22, replace_nans=False)
 _ = aeon_c22.fit_transform(IPD_X_train)
 
 results_aeon = [features_names_pycatch22]
@@ -91,6 +90,12 @@ for i in range(len(IPD_X_train)):
     results = pycatch22.catch22_all(IPD_X_train[i][0])
     results_pycatch22.append(results['values'])
 
+
+
+
+
+"Workbook"
+aeon_file_name = "aeon_catch22_with_numba"
 
 #aeon xlsx
 wb = Workbook()
@@ -108,7 +113,6 @@ for i in range(len(results_aeon)):
     
 
 wb.save(aeon_file_name + ".xlsx")
-
 
 #pycatch xlsx
 wb = Workbook()
