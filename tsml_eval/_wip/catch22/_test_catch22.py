@@ -1,4 +1,3 @@
-#from _catch22 import Catch22
 from _catch22 import Catch22
 import pycatch22
 import numpy as np
@@ -8,6 +7,31 @@ from openpyxl.styles import PatternFill
 from decimal import Decimal, ROUND_HALF_UP
 import csv
 import os
+
+features_test =  [
+        "mode_5",
+        "mode_10",
+        "stretch_high",
+        "outlier_timing_pos",
+        "outlier_timing_neg",
+        "acf_timescale",
+        "acf_first_min",
+        "centroid_freq",
+        "low_freq_power",
+        "forecast_error",
+        "trev",
+        "ami2",
+        "ami_timescale",
+        "high_fluctuation",
+        "stretch_decreasing",
+        "entropy_pairs",
+        "whiten_timescale",
+        "periodicity",
+        "dfa",
+        "rs_range",
+        "transition_matrix",
+        "periodicity",
+    ]
 
 feature_names_aeon = [
     "DN_HistogramMode_5",
@@ -71,10 +95,10 @@ print("Numba Off: ",os.environ['NUMBA_DISABLE_JIT'])
 
 
 #aeon
-aeon_c22 = Catch22(replace_nans=True)
+aeon_c22 = Catch22(features=features_test,replace_nans=True)
 _ = aeon_c22.fit_transform(IPD_X_train)
 
-results_aeon = [features_names_pycatch22]
+results_aeon = [features_test]
 for i in range(len(_)):
     #formatting it to pycatch22 format
     results_aeon.append(_[i])

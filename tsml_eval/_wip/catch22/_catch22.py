@@ -17,7 +17,6 @@ from aeon.utils.numba.general import z_normalise_series, z_normalise_series_with
 from aeon.utils.numba.stats import mean, numba_max, numba_min
 from aeon.utils.validation import check_n_jobs
 
-
 feature_names = [
     "DN_HistogramMode_5",
     "DN_HistogramMode_10",
@@ -41,6 +40,31 @@ feature_names = [
     "SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1",
     "SB_TransitionMatrix_3ac_sumdiagcov",
     "PD_PeriodicityWang_th0_01",
+]
+
+feature_names_short = [
+    "mode_5",
+    "mode_10",
+    "stretch_high",
+    "outlier_timing_pos",
+    "outlier_timing_neg",
+    "acf_timescale",
+    "acf_first_min",
+    "centroid_freq",
+    "low_freq_power",
+    "forecast_error",
+    "trev",
+    "ami2",
+    "ami_timescale",
+    "high_fluctuation",
+    "stretch_decreasing",
+    "entropy_pairs",
+    "whiten_timescale",
+    "periodicity",
+    "dfa",
+    "rs_range",
+    "transition_matrix",
+    "periodicity",
 ]
 
 
@@ -69,6 +93,14 @@ class Catch22(BaseCollectionTransformer):
             "SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1",
             "SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1",
             "SB_TransitionMatrix_3ac_sumdiagcov", "PD_PeriodicityWang_th0_01"]
+        Shortened:
+            ["mode_5","mode_10","stretch_high","outlier_timing_pos",
+            "outlier_timing_neg","acf_timescale","acf_first_min","centroid_freq",
+            "low_freq_power","forecast_error","trev","ami2","ami_timescale",
+            "high_fluctuation","stretch_decreasing","entropy_pairs",
+            "whiten_timescale","periodicity","dfa","rs_range",
+            "transition_matrix","periodicity"]
+
     catch24 : bool, default=False
         Extract the mean and standard deviation as well as the 22 Catch22 features if
         true. If a List of specific features to extract is provided, "Mean" and/or
@@ -190,26 +222,26 @@ class Catch22(BaseCollectionTransformer):
             features = [
                 pycatch22.DN_HistogramMode_5,
                 pycatch22.DN_HistogramMode_10,
-                pycatch22.CO_f1ecac,
-                pycatch22.CO_FirstMin_ac,
-                pycatch22.CO_HistogramAMI_even_2_5,
-                pycatch22.CO_trev_1_num,
-                pycatch22.MD_hrv_classic_pnn40,
-                pycatch22.SB_BinaryStats_mean_longstretch1,
-                pycatch22.SB_TransitionMatrix_3ac_sumdiagcov,
-                pycatch22.PD_PeriodicityWang_th0_01,
-                pycatch22.CO_Embed2_Dist_tau_d_expfit_meandiff,
-                pycatch22.IN_AutoMutualInfoStats_40_gaussian_fmmi,
-                pycatch22.FC_LocalSimple_mean1_tauresrat,
+                pycatch22.SB_BinaryStats_diff_longstretch0,
                 pycatch22.DN_OutlierInclude_p_001_mdrmd,
                 pycatch22.DN_OutlierInclude_n_001_mdrmd,
+                pycatch22.CO_f1ecac,
+                pycatch22.CO_FirstMin_ac,
                 pycatch22.SP_Summaries_welch_rect_area_5_1,
-                pycatch22.SB_BinaryStats_diff_longstretch0,
-                pycatch22.SB_MotifThree_quantile_hh,
-                pycatch22.SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1,
-                pycatch22.SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1,
                 pycatch22.SP_Summaries_welch_rect_centroid,
-                pycatch22.FC_LocalSimple_mean3_stderr
+                pycatch22.FC_LocalSimple_mean3_stderr,
+                pycatch22.CO_trev_1_num,
+                pycatch22.CO_HistogramAMI_even_2_5,
+                pycatch22.IN_AutoMutualInfoStats_40_gaussian_fmmi,
+                pycatch22.MD_hrv_classic_pnn40,
+                pycatch22.SB_BinaryStats_mean_longstretch1,
+                pycatch22.SB_MotifThree_quantile_hh,
+                pycatch22.FC_LocalSimple_mean1_tauresrat,
+                pycatch22.CO_Embed2_Dist_tau_d_expfit_meandiff,
+                pycatch22.SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1,
+                pycatch22.SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1,
+                pycatch22.SB_TransitionMatrix_3ac_sumdiagcov,
+                pycatch22.PD_PeriodicityWang_th0_01,
             ]
         else:
             features = [
@@ -505,8 +537,8 @@ class Catch22(BaseCollectionTransformer):
         ami = np.zeros(len(X_ac), dtype=np.float64)
         for i in range(tau):
             ac = _autocorr_lag(X_ac, len(X_ac), i + 1)
-            ami[i]= -0.5 * np.log(1 - np.power(ac, 2))
-        
+            ami[i] = -0.5 * np.log(1 - np.power(ac, 2))
+
         for i in range(1, tau - 1):
             if ami[i] < ami[i - 1] and ami[i] < ami[i + 1]:
                 return i
@@ -583,11 +615,7 @@ class Catch22(BaseCollectionTransformer):
                 out2[i][j] = tmp
         hh = 0.0
         for i in range(alphabet_size):
-            f = 0.0
-            for j in range(alphabet_size):
-                if out2[i][j] > 0:
-                    f += out2[i][j] * np.log(out2[i][j])
-            hh += -1 * f      
+            hh += _f_entropy(out2[i], alphabet_size)
         return hh
 
     @staticmethod
@@ -716,16 +744,16 @@ class Catch22(BaseCollectionTransformer):
         columns[0] = column1
         columns[1] = column2
         columns[2] = column3
-        
-        #columns = [column1, column2, column3]
-        cov_array = np.zeros((3,3), dtype=np.float64)
+
+        # columns = [column1, column2, column3]
+        cov_array = np.zeros((3, 3), dtype=np.float64)
         covTemp = 0.0
         for i in range(3):
             for j in range(3):
                 covTemp = _covariance(columns[i], columns[j], 3)
                 cov_array[i][j] = covTemp
                 cov_array[j][i] = covTemp
-    
+
         sum_of_diagonal_cov = 0.0
         for i in range(3):
             sum_of_diagonal_cov += cov_array[i][i]
@@ -1325,23 +1353,14 @@ def _verify_features(features, catch24):
 @njit(fastmath=True, cache=True)
 def _compute_autocorrelations(X):
     mean = np.mean(X)
-    
-    nFFT = int(np.log2(len(X)))
-    if 2**nFFT == len(X):
-        nFFT = len(X) * 2
-    else:
-        nFFT = (2 ** (nFFT + 1)) * 2
+    nFFT = _nearestPowerOf2(len(X)) * 2
     F = np.zeros(nFFT * 2, dtype=np.complex128)
     for i in range(len(X)):
         F[i] = complex(X[i] - mean, 0.0)
     for i in range(len(X), nFFT):
         F[i] = complex(0.0, 0.0)
     tw = np.zeros(nFFT * 2, dtype=np.complex128)
-    #twiddles
-    PI = np.pi
-    for i in range(nFFT):
-        tmp = 0.0 - PI * i / nFFT * 1j
-        tw[i] = np.exp(tmp)
+    _twiddles(tw, nFFT)
     F = _fft(F, tw)
     #dot multiply
     F = np.multiply(F, np.conj(F))
@@ -1353,22 +1372,25 @@ def _compute_autocorrelations(X):
     out = np.real(F)
     return out
 
+
 @njit(fastmath=True, cache=True)
 def _nearestPowerOf2(N):
     a = int(np.log2(N))
-    
+
     if 2**a == N:
         return N
-        
-    return 2**(a + 1)
+
+    return 2 ** (a + 1)
+
 
 @njit(fastmath=True, cache=True)
 def _twiddles(a, size):
     PI = np.pi
-    
+
     for i in range(size):
-        tmp = 0.0 - PI * i / size * 1j 
+        tmp = 0.0 - PI * i / size * 1j
         a[i] = np.exp(tmp)
+
 
 @njit(fastmath=True, cache=True)
 def _fft(a, tw):
@@ -1404,28 +1426,7 @@ def _stddev(a, size):
     sd = np.sqrt(np.sum((a[:size] - m) ** 2) / (size - 1))
     return sd
 
-@njit(fastmath=True, cache=True)
-def _autocorr_lag(x, size, lag):
-    return _corr(x, x[lag:], size - lag)
-    
-@njit(fastmath=True, cache=True)
-def _corr(x, y, size):
-    nom = 0.0
-    denomX = 0.0
-    denomY = 0.0
-    meanX = 0.0
-    for i in range(size):
-        meanX += x[i]
-    meanX = meanX / size
-    meanY = np.mean(y)
-    
-    for i in range(size):
-        nom += (x[i] - meanX) * (y[i] - meanY)
-        denomX += (x[i] - meanX) * (x[i] - meanX)
-        denomY += (y[i] - meanY) * (y[i] - meanY)
-        
-    return nom/np.sqrt(denomX * denomY)
-    
+
 @njit(fastmath=True, cache=True)
 def _sb_coarsegrain(y, num_groups, labels):
     th = np.zeros((num_groups + 1),dtype=np.float64)
@@ -1462,21 +1463,4 @@ def _quantile(X, quant):
     return value
     
 
-@njit(fastmath=True, cache=True)
-def _f_entropy(a, size):
-    f = 0.0
-    for i in range(size):
-        if(a[i] > 0):
-            f += a[i] * np.log(a[i])
-    return -1 * f
 
-@njit(fastmath=True, cache=True)
-def _covariance(X, Y, size):
-    val = 0
-    meanX = np.mean(X)
-    meanY = np.mean(Y)
-    for i in range(size):
-        val += (X[i] - meanX) * (Y[i] - meanY)
-        
-    return val / (size - 1)
-    
