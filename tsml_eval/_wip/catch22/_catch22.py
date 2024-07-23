@@ -1428,6 +1428,30 @@ def _stddev(a, size):
 
 
 @njit(fastmath=True, cache=True)
+def _autocorr_lag(x, size, lag):
+    return _corr(x, x[lag:], size - lag)
+
+
+@njit(fastmath=True, cache=True)
+def _corr(x, y, size):
+    nom = 0.0
+    denomX = 0.0
+    denomY = 0.0
+    meanX = 0.0
+    for i in range(size):
+        meanX += x[i]
+    meanX = meanX / size
+    meanY = np.mean(y)
+
+    for i in range(size):
+        nom += (x[i] - meanX) * (y[i] - meanY)
+        denomX += (x[i] - meanX) * (x[i] - meanX)
+        denomY += (y[i] - meanY) * (y[i] - meanY)
+
+    return nom / np.sqrt(denomX * denomY)
+
+
+@njit(fastmath=True, cache=True)
 def _sb_coarsegrain(y, num_groups, labels):
     th = np.zeros((num_groups + 1),dtype=np.float64)
     ls = np.zeros((num_groups + 1),dtype=np.float64)
@@ -1463,4 +1487,21 @@ def _quantile(X, quant):
     return value
     
 
+@njit(fastmath=True, cache=True)
+def _f_entropy(a, size):
+    f = 0.0
+    for i in range(size):
+        if a[i] > 0:
+            f += a[i] * np.log(a[i])
+    return -1 * f
 
+
+@njit(fastmath=True, cache=True)
+def _covariance(X, Y, size):
+    val = 0
+    meanX = np.mean(X)
+    meanY = np.mean(Y)
+    for i in range(size):
+        val += (X[i] - meanX) * (Y[i] - meanY)
+
+    return val / (size - 1)
