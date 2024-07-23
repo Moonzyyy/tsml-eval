@@ -1,7 +1,7 @@
 from _catch22 import Catch22
 import pycatch22
 import numpy as np
-from aeon.datasets import tsc_datasets, load_italy_power_demand, load_arrow_head, load_basic_motions
+from aeon.datasets import tsc_datasets, load_italy_power_demand, load_arrow_head, load_basic_motions, load_acsf1
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from decimal import Decimal, ROUND_HALF_UP
@@ -62,10 +62,12 @@ features_names_pycatch22 = [
 # echo $env:NUMBA_DISABLE_JIT
 # Numba Disabled Switcher 0 = off, 1 = on
 
-IPD_X_train, IPD_y_train = load_italy_power_demand(split="train")
-#IPD_X_train = [IPD_X_train[0]]
-# print("Training Data: ", IPD_X_train)
-# print("Length of data: ", len(IPD_X_train[0][0]))
+IPD_X_train, IPD_y_train = load_basic_motions(split="train")
+IPD_X_train = [IPD_X_train[0]]
+test = IPD_X_train[0][0][0:20]
+IPD_X_train = np.array([[test]])
+print("Training Data: ", IPD_X_train)
+print("Length of data: ", len(IPD_X_train[0][0]))
 os.environ['NUMBA_DISABLE_JIT'] = '0'
 print("Numba Off: ",os.environ['NUMBA_DISABLE_JIT'])
 
@@ -91,9 +93,9 @@ for i in range(len(pycResult)):
 
 # #pycatch
 # results_pycatch22 = [features_names_pycatch22]
-# for i in range(len(IPD_X_train)):
-#     results = pycatch22.catch22_all(IPD_X_train[i][0])
-#     results_pycatch22.append(results['values'])
+# # for i in range(len(IPD_X_train)):
+# results = pycatch22.catch22_all(IPD_X_train[i][0])
+# results_pycatch22.append(results['values'])
 
 
 

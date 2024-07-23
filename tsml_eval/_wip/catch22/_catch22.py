@@ -627,14 +627,8 @@ class Catch22(BaseCollectionTransformer):
         if len(X) < 2:
             return 0
         res = _local_simple_mean(X, 1)
-        print("res: ", res)
 
         ac = _compute_autocorrelations(res)
-        print("ac: ", ac)
-        print("ac again with fz: ",  _ac_first_zero(ac))
-        
-        
-        print("acfz: ", acfz)
         return _ac_first_zero(ac) / acfz
 
     @staticmethod
@@ -851,7 +845,6 @@ def _histogram_mode(X, num_bins, smin, smax):
         elif histogram[i] == max_count:
             num_maxs += 1
             max_sum += v
-
     return max_sum / num_maxs
 
 
