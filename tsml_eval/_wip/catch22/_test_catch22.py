@@ -62,8 +62,7 @@ features_names_pycatch22 = [
 # echo $env:NUMBA_DISABLE_JIT
 # Numba Disabled Switcher 0 = off, 1 = on
 
-<<<<<<< HEAD
-IPD_X_train, IPD_y_train = load_arrow_head(split="train")dasd
+IPD_X_train, IPD_y_train = load_arrow_head(split="train")
 #IPD_X_train = [IPD_X_train[332]]
 #print("Training Data: ", IPD_X_train)
 os.environ['NUMBA_DISABLE_JIT'] = '0'
