@@ -17,7 +17,7 @@ from aeon.utils.numba.general import z_normalise_series, z_normalise_series_with
 from aeon.utils.numba.stats import mean, numba_max, numba_min
 from aeon.utils.validation import check_n_jobs
 
-features_names_pycatch22 = [
+feature_names = [
         "DN_HistogramMode_5",
         "DN_HistogramMode_10",
         "CO_f1ecac",
@@ -627,12 +627,14 @@ class Catch22(BaseCollectionTransformer):
         if len(X) < 2:
             return 0
         res = _local_simple_mean(X, 1)
-        mean = np.mean(res)
+        print("res: ", res)
 
-        nfft = int(np.power(2, np.ceil(np.log(len(res)) / np.log(2))))
-        fft = np.fft.fft(res - mean, n=nfft)
-        ac = _autocorr(res, fft)
-
+        ac = _compute_autocorrelations(res)
+        print("ac: ", ac)
+        print("ac again with fz: ",  _ac_first_zero(ac))
+        
+        
+        print("acfz: ", acfz)
         return _ac_first_zero(ac) / acfz
 
     @staticmethod
