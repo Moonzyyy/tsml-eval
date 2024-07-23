@@ -56,23 +56,20 @@ features_names_pycatch22 = [
         'SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1',
         'SP_Summaries_welch_rect_centroid',
         'FC_LocalSimple_mean3_stderr'
-    ]
+]
 
 # $env:NUMBA_DISABLE_JIT = "0"
 # echo $env:NUMBA_DISABLE_JIT
 # Numba Disabled Switcher 0 = off, 1 = on
 
+<<<<<<< HEAD
 IPD_X_train, IPD_y_train = load_arrow_head(split="train")dasd
 #IPD_X_train = [IPD_X_train[332]]
 #print("Training Data: ", IPD_X_train)
 os.environ['NUMBA_DISABLE_JIT'] = '0'
 print("Numba Off: ",os.environ['NUMBA_DISABLE_JIT'])
 
-aeon_file_name = ""
-if os.environ['NUMBA_DISABLE_JIT'] == '0':
-    aeon_file_name = "aeon_catch22_with_numba"
-else:
-    aeon_file_name = "aeon_catch22_no_numba"
+
 #aeon
 aeon_c22 = Catch22(replace_nans=True)
 _ = aeon_c22.fit_transform(IPD_X_train)
@@ -90,6 +87,12 @@ for i in range(len(IPD_X_train)):
     results_pycatch22.append(results['values'])
 
 
+
+
+
+"Workbook"
+aeon_file_name = "aeon_catch22_with_numba"
+
 #aeon xlsx
 wb = Workbook()
 ws = wb.active
@@ -103,10 +106,8 @@ for i in range(len(results_aeon)):
                                                                                 rounding=ROUND_HALF_UP)
             if rounded_aeon_results != rounded_pycatch22_results:
                 cell.fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
-    
 
 wb.save(aeon_file_name + ".xlsx")
-
 
 #pycatch xlsx
 wb = Workbook()
