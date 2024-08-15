@@ -4,4 +4,4 @@ __all__ = [
     "PiecewiseLinearApproximation",
 ]
 
-from _pla import PiecewiseLinearApproximation
+from _pla import PLASeriesTransformer

@@ -1,5 +1,5 @@
-from _pla import PiecewiseLinearApproximation
-from aeon.datasets import load_electric_devices_segmentation
+from _pla import PLASeriesTransformer
+from aeon.datasets import load_electric_devices_segmentation, load_italy_power_demand
 from aeon.visualisation import plot_series_with_change_points, plot_series_with_profiles
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,11 +8,9 @@ from sklearn.preprocessing import MinMaxScaler
 
 ts, period_size, true_cps = load_electric_devices_segmentation()
 ts = ts.values
+ts = ts[:50]
 
-
-ts = np.array([573.0,375.0,301.0,212.0,55.0,34.0,25.0,33.0,113.0,143.0,303.0,615.0,1226.0,1281.0,1221.0,1081.0,866.0,1096.0,1039.0,975.0,746.0,581.0,409.0,182.0])
-
-pla = PiecewiseLinearApproximation(20, 2)
+pla = PLASeriesTransformer(max_error=0.02, transformer="swab")
 results = pla.fit_transform(ts)
 
 print("Original: ", ts)
